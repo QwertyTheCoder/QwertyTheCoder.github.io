@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Math Drawing Website - Create mathematical expressions with drag-and-drop characters">
+    <title>Math Draw - Mathematical Expression Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="app-title">
+                <span class="title-icon">∑</span>
+                Math Draw
+            </h1>
+            <div class="manual-input-container">
+                <input type="text" id="manualInput" class="manual-input"
+                    placeholder="Type: x^2, x_n, \alpha, \pi, or a/b for fraction" maxlength="50">
+                <button id="insertManual" class="action-button primary">Insert</button>
+            </div>
+            <div class="header-actions">
+                <button id="copyExpression" class="action-button" title="Copy expression to clipboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy
+                </button>
+                <button id="exportImage" class="action-button" title="Export canvas as image">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export
+                </button>
+                <button id="zoomIn" class="action-button" title="Zoom in">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </button>
+                <button id="zoomOut" class="action-button" title="Zoom out">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </button>
+                <button id="alignLeft" class="action-button" title="Align selected left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="17" y1="10" x2="3" y2="10"></line>
+                        <line x1="21" y1="6" x2="3" y2="6"></line>
+                        <line x1="21" y1="14" x2="3" y2="14"></line>
+                        <line x1="17" y1="18" x2="3" y2="18"></line>
+                    </svg>
+                </button>
+                <button id="alignCenter" class="action-button" title="Align selected center">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="10" x2="6" y2="10"></line>
+                        <line x1="21" y1="6" x2="3" y2="6"></line>
+                        <line x1="21" y1="14" x2="3" y2="14"></line>
+                        <line x1="18" y1="18" x2="6" y2="18"></line>
+                    </svg>
+                </button>
+                <button id="fractionBuilder" class="action-button" title="Create fraction (select 2 elements)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                        <text x="12" y="8" font-size="8" text-anchor="middle" fill="currentColor">a</text>
+                        <text x="12" y="20" font-size="8" text-anchor="middle" fill="currentColor">b</text>
+                    </svg>
+                    a/b
+                </button>
+                <button id="matrixBuilder" class="action-button" title="Create matrix">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Matrix
+                </button>
+                <button id="clearCanvas" class="action-button danger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Clear
+                </button>
+                <button id="deleteSelected" class="action-button warning">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Character Palette Sidebar -->
+        <aside class="palette-sidebar">
+            <div class="palette-header">
+                <h2 class="palette-title">Character Palette</h2>
+                <p class="palette-subtitle">Drag characters to canvas</p>
+            </div>
+
+            <div class="palette-content">
+                <!-- Numbers & Variables (MOST USED) -->
+                <div class="char-category">
+                    <h3 class="category-title">Numbers & Variables</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="0">0</div>
+                        <div class="char-item" draggable="true" data-char="1">1</div>
+                        <div class="char-item" draggable="true" data-char="2">2</div>
+                        <div class="char-item" draggable="true" data-char="3">3</div>
+                        <div class="char-item" draggable="true" data-char="4">4</div>
+                        <div class="char-item" draggable="true" data-char="5">5</div>
+                        <div class="char-item" draggable="true" data-char="6">6</div>
+                        <div class="char-item" draggable="true" data-char="7">7</div>
+                        <div class="char-item" draggable="true" data-char="8">8</div>
+                        <div class="char-item" draggable="true" data-char="9">9</div>
+                        <div class="char-item" draggable="true" data-char="x">x</div>
+                        <div class="char-item" draggable="true" data-char="y">y</div>
+                        <div class="char-item" draggable="true" data-char="z">z</div>
+                        <div class="char-item" draggable="true" data-char="a">a</div>
+                        <div class="char-item" draggable="true" data-char="b">b</div>
+                        <div class="char-item" draggable="true" data-char="c">c</div>
+                    </div>
+                </div>
+
+                <!-- Basic Operators -->
+                <div class="char-category">
+                    <h3 class="category-title">Basic Operators</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="+">+</div>
+                        <div class="char-item" draggable="true" data-char="-">−</div>
+                        <div class="char-item" draggable="true" data-char="×">×</div>
+                        <div class="char-item" draggable="true" data-char="÷">÷</div>
+                        <div class="char-item" draggable="true" data-char="=">=</div>
+                        <div class="char-item" draggable="true" data-char="≠">≠</div>
+                        <div class="char-item" draggable="true" data-char="±">±</div>
+                        <div class="char-item" draggable="true" data-char="∓">∓</div>
+                    </div>
+                </div>
+
+                <!-- Brackets & Parentheses -->
+                <div class="char-category">
+                    <h3 class="category-title">Brackets</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="(">(</div>
+                        <div class="char-item" draggable="true" data-char=")">)</div>
+                        <div class="char-item" draggable="true" data-char="[">[</div>
+                        <div class="char-item" draggable="true" data-char="]">]</div>
+                        <div class="char-item" draggable="true" data-char="{">{</div>
+                        <div class="char-item" draggable="true" data-char="}">}</div>
+                        <div class="char-item" draggable="true" data-char="⟨">⟨</div>
+                        <div class="char-item" draggable="true" data-char="⟩">⟩</div>
+                        <div class="char-item" draggable="true" data-char="|">|</div>
+                        <div class="char-item" draggable="true" data-char="‖">‖</div>
+                    </div>
+                </div>
+
+                <!-- Superscripts -->
+                <div class="char-category">
+                    <h3 class="category-title">Superscripts</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="⁰">⁰</div>
+                        <div class="char-item" draggable="true" data-char="¹">¹</div>
+                        <div class="char-item" draggable="true" data-char="²">²</div>
+                        <div class="char-item" draggable="true" data-char="³">³</div>
+                        <div class="char-item" draggable="true" data-char="⁴">⁴</div>
+                        <div class="char-item" draggable="true" data-char="⁵">⁵</div>
+                        <div class="char-item" draggable="true" data-char="⁶">⁶</div>
+                        <div class="char-item" draggable="true" data-char="⁷">⁷</div>
+                        <div class="char-item" draggable="true" data-char="⁸">⁸</div>
+                        <div class="char-item" draggable="true" data-char="⁹">⁹</div>
+                        <div class="char-item" draggable="true" data-char="ⁿ">ⁿ</div>
+                    </div>
+                </div>
+
+                <!-- Greek Letters (Lowercase) -->
+                <div class="char-category">
+                    <h3 class="category-title">Greek Letters (Lower)</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="α">α</div>
+                        <div class="char-item" draggable="true" data-char="β">β</div>
+                        <div class="char-item" draggable="true" data-char="γ">γ</div>
+                        <div class="char-item" draggable="true" data-char="δ">δ</div>
+                        <div class="char-item" draggable="true" data-char="ε">ε</div>
+                        <div class="char-item" draggable="true" data-char="θ">θ</div>
+                        <div class="char-item" draggable="true" data-char="λ">λ</div>
+                        <div class="char-item" draggable="true" data-char="μ">μ</div>
+                        <div class="char-item" draggable="true" data-char="π">π</div>
+                        <div class="char-item" draggable="true" data-char="ρ">ρ</div>
+                        <div class="char-item" draggable="true" data-char="σ">σ</div>
+                        <div class="char-item" draggable="true" data-char="τ">τ</div>
+                        <div class="char-item" draggable="true" data-char="φ">φ</div>
+                        <div class="char-item" draggable="true" data-char="ω">ω</div>
+                    </div>
+                </div>
+
+                <!-- Comparison -->
+                <div class="char-category">
+                    <h3 class="category-title">Comparison</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="<">&lt;</div>
+                        <div class="char-item" draggable="true" data-char=">">&gt;</div>
+                        <div class="char-item" draggable="true" data-char="≤">≤</div>
+                        <div class="char-item" draggable="true" data-char="≥">≥</div>
+                        <div class="char-item" draggable="true" data-char="≈">≈</div>
+                        <div class="char-item" draggable="true" data-char="≡">≡</div>
+                        <div class="char-item" draggable="true" data-char="∝">∝</div>
+                        <div class="char-item" draggable="true" data-char="∼">∼</div>
+                    </div>
+                </div>
+
+                <!-- Special Symbols -->
+                <div class="char-category">
+                    <h3 class="category-title">Special Symbols</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="√">√</div>
+                        <div class="char-item" draggable="true" data-char="∛">∛</div>
+                        <div class="char-item" draggable="true" data-char="∜">∜</div>
+                        <div class="char-item" draggable="true" data-char="°">°</div>
+                        <div class="char-item" draggable="true" data-char="′">′</div>
+                        <div class="char-item" draggable="true" data-char="″">″</div>
+                        <div class="char-item" draggable="true" data-char="∑">∑</div>
+                        <div class="char-item" draggable="true" data-char="∏">∏</div>
+                        <div class="char-item" draggable="true" data-char="⊕">⊕</div>
+                        <div class="char-item" draggable="true" data-char="⊗">⊗</div>
+                        <div class="char-item" draggable="true" data-char="⊙">⊙</div>
+                        <div class="char-item" draggable="true" data-char="∠">∠</div>
+                        <div class="char-item" draggable="true" data-char="∡">∡</div>
+                        <div class="char-item" draggable="true" data-char="⊥">⊥</div>
+                        <div class="char-item" draggable="true" data-char="∥">∥</div>
+                        <div class="char-item" draggable="true" data-char="∦">∦</div>
+                    </div>
+                </div>
+
+                <!-- Calculus & Analysis -->
+                <div class="char-category">
+                    <h3 class="category-title">Calculus & Analysis</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="∫">∫</div>
+                        <div class="char-item" draggable="true" data-char="∬">∬</div>
+                        <div class="char-item" draggable="true" data-char="∭">∭</div>
+                        <div class="char-item" draggable="true" data-char="∮">∮</div>
+                        <div class="char-item" draggable="true" data-char="∂">∂</div>
+                        <div class="char-item" draggable="true" data-char="∇">∇</div>
+                        <div class="char-item" draggable="true" data-char="∆">∆</div>
+                        <div class="char-item" draggable="true" data-char="∞">∞</div>
+                        <div class="char-item" draggable="true" data-char="lim">lim</div>
+                        <div class="char-item" draggable="true" data-char="d/dx">d/dx</div>
+                    </div>
+                </div>
+
+                <!-- Greek Letters (Uppercase) -->
+                <div class="char-category">
+                    <h3 class="category-title">Greek Letters (Upper)</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="Α">Α</div>
+                        <div class="char-item" draggable="true" data-char="Β">Β</div>
+                        <div class="char-item" draggable="true" data-char="Γ">Γ</div>
+                        <div class="char-item" draggable="true" data-char="Δ">Δ</div>
+                        <div class="char-item" draggable="true" data-char="Θ">Θ</div>
+                        <div class="char-item" draggable="true" data-char="Λ">Λ</div>
+                        <div class="char-item" draggable="true" data-char="Π">Π</div>
+                        <div class="char-item" draggable="true" data-char="Σ">Σ</div>
+                        <div class="char-item" draggable="true" data-char="Φ">Φ</div>
+                        <div class="char-item" draggable="true" data-char="Ω">Ω</div>
+                    </div>
+                </div>
+
+                <!-- Set Theory -->
+                <div class="char-category">
+                    <h3 class="category-title">Set Theory</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="∈">∈</div>
+                        <div class="char-item" draggable="true" data-char="∉">∉</div>
+                        <div class="char-item" draggable="true" data-char="⊂">⊂</div>
+                        <div class="char-item" draggable="true" data-char="⊃">⊃</div>
+                        <div class="char-item" draggable="true" data-char="⊆">⊆</div>
+                        <div class="char-item" draggable="true" data-char="⊇">⊇</div>
+                        <div class="char-item" draggable="true" data-char="∪">∪</div>
+                        <div class="char-item" draggable="true" data-char="∩">∩</div>
+                        <div class="char-item" draggable="true" data-char="∅">∅</div>
+                        <div class="char-item" draggable="true" data-char="ℕ">ℕ</div>
+                        <div class="char-item" draggable="true" data-char="ℤ">ℤ</div>
+                        <div class="char-item" draggable="true" data-char="ℚ">ℚ</div>
+                        <div class="char-item" draggable="true" data-char="ℝ">ℝ</div>
+                        <div class="char-item" draggable="true" data-char="ℂ">ℂ</div>
+                    </div>
+                </div>
+
+                <!-- Logic -->
+                <div class="char-category">
+                    <h3 class="category-title">Logic</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="∧">∧</div>
+                        <div class="char-item" draggable="true" data-char="∨">∨</div>
+                        <div class="char-item" draggable="true" data-char="¬">¬</div>
+                        <div class="char-item" draggable="true" data-char="⇒">⇒</div>
+                        <div class="char-item" draggable="true" data-char="⇔">⇔</div>
+                        <div class="char-item" draggable="true" data-char="∀">∀</div>
+                        <div class="char-item" draggable="true" data-char="∃">∃</div>
+                        <div class="char-item" draggable="true" data-char="∄">∄</div>
+                        <div class="char-item" draggable="true" data-char="⊤">⊤</div>
+                        <div class="char-item" draggable="true" data-char="⊥">⊥</div>
+                    </div>
+                </div>
+
+                <!-- Arrows -->
+                <div class="char-category">
+                    <h3 class="category-title">Arrows</h3>
+                    <div class="char-grid">
+                        <div class="char-item" draggable="true" data-char="→">→</div>
+                        <div class="char-item" draggable="true" data-char="←">←</div>
+                        <div class="char-item" draggable="true" data-char="↑">↑</div>
+                        <div class="char-item" draggable="true" data-char="↓">↓</div>
+                        <div class="char-item" draggable="true" data-char="↔">↔</div>
+                        <div class="char-item" draggable="true" data-char="⇄">⇄</div>
+                        <div class="char-item" draggable="true" data-char="⇌">⇌</div>
+                        <div class="char-item" draggable="true" data-char="↦">↦</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Canvas Area -->
+        <main class="canvas-area">
+            <div class="canvas-header">
+                <h2 class="canvas-title">Workspace</h2>
+                <div class="canvas-info">
+                    <span class="info-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                        Hold Shift to select multiple
+                    </span>
+                    <span class="info-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                            <path d="M2 2l7.586 7.586"></path>
+                        </svg>
+                        Drag to move elements
+                    </span>
+                </div>
+            </div>
+            <div id="canvas" class="canvas">
+                <div class="canvas-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    <p>Drag characters here to start creating</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
